@@ -26,7 +26,7 @@ class App {
         log(sentences)
         let i = -sentences.length / 2;
         sentences.forEach(sent => {
-            this.trees.push(new Tree(sent, new THREE.Vector3(i, 0, 0)))
+            this.trees.push(new Tree(sent, new THREE.Vector3(i * 2, 0, 0)))
             i++
         })
         /* this.trees.push(new Tree(sentences[0])) */

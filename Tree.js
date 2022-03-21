@@ -21,7 +21,7 @@ const parseRules = (seed) => {
     let rules = []
     /* log(seed.length / 3) */
     for (let i = 0; i < seed.length - seed.length % 3; i += 3) {
-        rules.push([seed[i], seed[i + 1], seed[i + 2]])
+        rules.push([seed[i] / 26, seed[i + 1] / 26, seed[i + 2] / 26])
 
     }
     return rules
@@ -61,7 +61,7 @@ class Tree {
         let prev_point = new THREE.Vector3(0, 0, 0);
         let points = [];
         let i = 1;
-        let angle_mult = .1;
+        let angle_mult = Math.PI * 2;
         for (let rule of this.rules) {
             i -= 1 / this.rules.length
             /* log(rule); */
@@ -93,7 +93,7 @@ class Tree {
             )
         ) */
 
-        this.object.scale.set(.05, .05, .05)
+        /* this.object.scale.set(.1, .1, .1) */
         /* this.object.rotation.x = Math.PI */
         app.scene.add(this.object)
     }
