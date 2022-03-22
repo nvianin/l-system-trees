@@ -14,6 +14,14 @@ class App {
         window.addEventListener("resize", this.setSize.bind(this))
 
         this.trees = [];
+        this.ground = new THREE.Mesh(
+            new THREE.PlaneGeometry(2, 2, 10, 10),
+            new THREE.MeshBasicMaterial({
+                wireframe: true
+            })
+        )
+        this.ground.rotation.x = Math.PI / 2
+        this.scene.add(this.ground)
 
         this.render()
     }
@@ -34,8 +42,10 @@ class App {
         /* this.trees.push(new Tree(sentences[0])) */
         this.tree = new Tree("", new THREE.Vector3())
         this.ruleset = new Ruleset()
-        this.ruleset.addRule("F", "FUF");
-        this.ruleset.addRule("U", "F")
+        this.ruleset.addRule("U", "[UFFUF]")
+        this.ruleset.randomize()
+        /* this.ruleset.addRule("F", "FR[FRFR]"); */
+        /* this.ruleset.addRule("U", "F") */
 
         this.input = document.querySelector("#text-input");
         this.input.addEventListener("input", e => {

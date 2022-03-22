@@ -39,9 +39,12 @@ class Tree {
         this.branches = [];
         this.object = new THREE.Object3D();
         this.object.position.copy(position)
+        this.scale = 1
+        this.object.scale.set(this.scale, this.scale, this.scale)
+        /* this.object.rotation.x = Math.PI */
         /* this.build(); */
 
-        this.turtle = new Turtle();
+        this.turtle = new Turtle(this.scale);
         let instructions = this.turtle.alphConv(this.message)
         log(instructions)
         let points = this.turtle.build(instructions)
