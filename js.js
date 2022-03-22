@@ -42,9 +42,8 @@ class App {
         /* this.trees.push(new Tree(sentences[0])) */
         this.tree = new Tree("", new THREE.Vector3())
         this.ruleset = new Ruleset()
-        this.ruleset.addRule("U", "[UFFUF]")
         this.ruleset.randomize()
-        /* this.ruleset.addRule("F", "FR[FRFR]"); */
+        this.ruleset.addRule("F", "FR[RFR]");
         /* this.ruleset.addRule("U", "F") */
 
         this.input = document.querySelector("#text-input");
@@ -52,15 +51,32 @@ class App {
             log(this.input.value);
             this.tree.build_sentence(this.input.value);
             this.lastInstructions = this.tree.turtle.alphConv(this.input.value);
+            this.sentence = this.input.value;
 
         })
-        this.input.value = "bonsoir je teste mon système de créations d'arbres"
+        this.sentence = "bonsoir je teste mon système de créations d'arbres"
+        this.input.value = this.sentence
         this.input.dispatchEvent(new Event("input"))
         window.addEventListener("keypress", e => {
             switch (e.key) {
                 case " ":
-                    this.lastInstructions = this.tree.turtle.evolve(this.lastInstructions, this.ruleset);
-                    this.tree.build_instructions(this.lastInstructions);
+                    if (this.lastInstructions.length < 100000) {
+                        this.lastInstructions = this.tree.turtle.evolve(this.lastInstructions, this.ruleset);
+                        this.tree.build_instructions(this.lastInstructions);
+                    } else {
+                        log("Next evolution too big !")
+                    }
+                    break;
+                case "r":
+                    this.ruleset.randomize();
+                    this.lastInstructions = this.tree.turtle.evolve(
+                        this.tree.turtle.alphConv(this.sentence),
+                        this.ruleset
+                    )
+                    this.tree.build_instructions(
+                        this.lastInstructions
+                    )
+
                     break;
             }
         })

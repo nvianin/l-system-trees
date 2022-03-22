@@ -21,7 +21,9 @@ class Turtle {
         this.object.scale.set(this.scale, this.scale, this.scale)
         app.scene.add(this.object)
         this.stored_position = new THREE.Vector3();
-        this.theta = .15;
+        this.stored_positions = [];
+        this.stored_positions[0] = new THREE.Vector3();
+        this.theta = ((Math.PI * 2) / 360) * 15;
     }
 
     build(instruction) {
@@ -29,6 +31,7 @@ class Turtle {
         this.object.rotation.set(0, 0, 0)
         this.heading = new THREE.Vector3(0, 0, 1);
         this.stored_position = new THREE.Vector3();
+        this.stored_positions = [new THREE.Vector3()];
         let points = []
         points.push(this.object.position.clone())
         log("Building " + instruction);
@@ -54,14 +57,14 @@ class Turtle {
                         new THREE.Vector3(0, 1, 0),
                         this.theta
                     ); */
-                    this.object.rotateY(this.theta);
+                    this.object.rotateX(this.theta);
                     break;
                 case "L":
                     /* this.heading.applyAxisAngle(
                         new THREE.Vector3(0, 1, 0),
                         -this.theta
                     ); */
-                    this.object.rotateY(-this.theta);
+                    this.object.rotateX(-this.theta);
                     break;
                 case "U":
                     /* this.heading.applyAxisAngle(
@@ -78,10 +81,16 @@ class Turtle {
                     this.object.rotateZ(-this.theta)
                     break;
                 case "[":
-                    this.stored_position.copy(this.object.position);
+                    /* this.stored_position.copy(this.object.position); */
+                    this.stored_positions.push(this.object.position.clone());
                     break;
                 case "]":
                     this.object.position.copy(this.stored_position);
+                    if (this.stored_positions.length > 1) {
+                        this.object.position.copy(this.stored_positions.pop());
+                    } else {
+                        this.object.position.copy(this.stored_positions[0]);
+                    }
                     break;
             }
             points.push(this.object.position.clone())

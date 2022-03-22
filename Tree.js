@@ -92,6 +92,7 @@ class Tree {
                 color: 0xffff33
             }))
         this.object.add(this.line)
+        this.setSizeRelativeToBoundingSphere()
         log(points)
 
     }
@@ -104,7 +105,15 @@ class Tree {
                 color: 0xffff33
             }))
         this.object.add(this.line)
+        this.setSizeRelativeToBoundingSphere()
         log(points)
+    }
+
+    setSizeRelativeToBoundingSphere() {
+        this.object.children[0].geometry.computeBoundingSphere()
+        let r = this.object.children[0].geometry.boundingSphere.radius;
+        this.object.scale.set(1 / r, 1 / r, 1 / r)
+        log(r, 1 / r)
     }
 
     __DEPRECATED__build() {
