@@ -14,6 +14,7 @@ class Turtle {
         this.position = new THREE.Vector3();
         this.heading = new THREE.Vector3(0, 0, 1);
         this.stored_position = new THREE.Vector3();
+        this.theta = 45;
     }
 
     build(instruction) {
@@ -28,6 +29,7 @@ class Turtle {
         for (let char of instruction.toUpperCase().split("")) {
             distance_factor = i / instruction.length
             /* log(distance_factor) */
+            /* distance_factor = 1 */
             /* log(char) */
             switch (char) {
                 case "F":
@@ -39,25 +41,25 @@ class Turtle {
                 case "R":
                     this.heading.applyAxisAngle(
                         new THREE.Vector3(0, 1, 0),
-                        90
+                        this.theta
                     );
                     break;
                 case "L":
                     this.heading.applyAxisAngle(
                         new THREE.Vector3(0, 1, 0),
-                        -90
+                        -this.theta
                     );
                     break;
                 case "U":
                     this.heading.applyAxisAngle(
                         new THREE.Vector3(1, 0, 0),
-                        -90
+                        -this.theta
                     );
                     break;
                 case "D":
                     this.heading.applyAxisAngle(
                         new THREE.Vector3(1, 0, 0),
-                        -90
+                        -this.theta
                     );
                     break;
                 case "[":
@@ -76,7 +78,7 @@ class Turtle {
     evolve(instruction, ruleset) {
         let new_instruction = ""
         for (let char of instruction.toUpperCase().split("")) {
-            new_instruction += ruleset.getRule(char);
+            new_instruction += ruleset.getRule(char, true);
         }
         return new_instruction;
     }
@@ -101,9 +103,11 @@ class Ruleset {
     addRule(input, output) {
         this.rules[input] = output
     }
-    getRule(key) {
+    getRule(key, conservative = false) {
         if (this.rules[key.toUpperCase()]) {
             return this.rules[key]
+        } else if (conservative) {
+            return key
         }
         return ""
     }

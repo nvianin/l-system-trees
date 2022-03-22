@@ -34,7 +34,8 @@ class App {
         /* this.trees.push(new Tree(sentences[0])) */
         this.tree = new Tree("", new THREE.Vector3())
         this.ruleset = new Ruleset()
-        this.ruleset.addRule("F", "[FRF][FLF]");
+        this.ruleset.addRule("F", "FUF");
+        this.ruleset.addRule("U", "F")
 
         this.input = document.querySelector("#text-input");
         this.input.addEventListener("input", e => {
@@ -43,6 +44,8 @@ class App {
             this.lastInstructions = this.tree.turtle.alphConv(this.input.value);
 
         })
+        this.input.value = "bonsoir je teste mon système de créations d'arbres"
+        this.input.dispatchEvent(new Event("input"))
         window.addEventListener("keypress", e => {
             switch (e.key) {
                 case " ":
