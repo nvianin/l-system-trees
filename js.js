@@ -27,13 +27,13 @@ class App {
     }
 
     init() {
-        /* const sentences = [
+        const sentences = [
             "I don't have a life, I have a routine.",
             "The trees speak to me, they have messages.",
             "I don't like eating pizza, it's too cheesy.",
             "The best part about being an adult is your childhood memories."
         ]
-        log(sentences)
+        /* log(sentences)
         let i = -sentences.length / 2;
         sentences.forEach(sent => {
             this.trees.push(new Tree(sent, new THREE.Vector3(i * 2, 0, 0)))
@@ -80,6 +80,17 @@ class App {
                     break;
             }
         })
+        let i = 0;
+        this.trees = []
+        for (let s of sentences) {
+            this.tree.build_sentence(s)
+            let o = new THREE.Object3D()
+            this.tree.object.copy(o);
+            o.position.set(i, 0, 0)
+            this.scene.add(o)
+            this.trees.push(o)
+            i++
+        }
 
 
     }
