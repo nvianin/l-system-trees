@@ -19,7 +19,7 @@ class App {
     }
 
     init() {
-        const sentences = [
+        /* const sentences = [
             "I don't have a life, I have a routine.",
             "The trees speak to me, they have messages.",
             "I don't like eating pizza, it's too cheesy.",
@@ -30,8 +30,28 @@ class App {
         sentences.forEach(sent => {
             this.trees.push(new Tree(sent, new THREE.Vector3(i * 2, 0, 0)))
             i++
-        })
+        }) */
         /* this.trees.push(new Tree(sentences[0])) */
+        this.tree = new Tree("", new THREE.Vector3())
+        this.ruleset = new Ruleset()
+        this.ruleset.addRule("F", "[FRF][FLF]");
+
+        this.input = document.querySelector("#text-input");
+        this.input.addEventListener("input", e => {
+            log(this.input.value);
+            this.tree.build_sentence(this.input.value);
+            this.lastInstructions = this.tree.turtle.alphConv(this.input.value);
+
+        })
+        window.addEventListener("keypress", e => {
+            switch (e.key) {
+                case " ":
+                    this.lastInstructions = this.tree.turtle.evolve(this.lastInstructions, this.ruleset);
+                    this.tree.build_instructions(this.lastInstructions);
+                    break;
+            }
+        })
+
 
     }
 

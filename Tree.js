@@ -33,13 +33,33 @@ class Tree {
     constructor(seed, position) {
         this.message = seed;
         this.seed = alphConv(seed);
-        log(this.seed)
+        /* log(this.seed) */
         this.rules = parseRules(this.seed)
-        log(this.rules)
+        /* log(this.rules) */
         this.branches = [];
         this.object = new THREE.Object3D();
         this.object.position.copy(position)
-        this.build();
+        /* this.build(); */
+
+        this.turtle = new Turtle();
+        let instructions = this.turtle.alphConv(this.message)
+        log(instructions)
+        let points = this.turtle.build(instructions)
+        /* this.line = new THREE.Line2(
+            new THREE.LineGeometry().setPositions(points),
+            new THREE.LineMaterial({
+                color: 0xffffff,
+                linewidth: 5
+            })
+        );
+        this.line.computeLineDistances(); */
+        this.line = new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints(points),
+            new THREE.LineBasicMaterial({
+                color: 0xffff33
+            }))
+        this.object.add(this.line);
+        app.scene.add(this.object)
     }
 
     evolve() {
@@ -59,7 +79,32 @@ class Tree {
         app.scene.add(this.object);
     }
 
-    build() {
+    build_sentence(sentence) {
+        let instructions = this.turtle.alphConv(sentence);
+        let points = this.turtle.build(instructions);
+        this.object.remove(this.line);
+        this.line = new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints(points),
+            new THREE.LineBasicMaterial({
+                color: 0xffff33
+            }))
+        this.object.add(this.line)
+        log(points)
+
+    }
+    build_instructions(instructions) {
+        let points = this.turtle.build(instructions);
+        this.object.remove(this.line);
+        this.line = new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints(points),
+            new THREE.LineBasicMaterial({
+                color: 0xffff33
+            }))
+        this.object.add(this.line)
+        log(points)
+    }
+
+    __DEPRECATED__build() {
         let prev_point = new THREE.Vector3(0, 0, 0);
         let points = [];
         let i = 1;

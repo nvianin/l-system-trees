@@ -11,6 +11,15 @@
             margin: 0;
             overflow: hidden;
         }
+
+        #text-input {
+            position: fixed;
+            bottom: 2%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            width: 60%;
+            height: 10%;
+        }
     </style>
     <script src="./Utils.js"></script>
     <script src="./node_modules/three/build/three.js"></script>
@@ -20,12 +29,13 @@
     <script src="./node_modules/three/examples/js/lines/LineSegmentsGeometry.js"></script>
     <script src="./node_modules/three/examples/js/lines/LineGeometry.js"></script>
     <script src="./node_modules/three/examples/js/lines/LineMaterial.js"></script>
+    <script src="Turtle.js"></script>
     <script src="Tree.js"></script>
     <script src="js.js"></script>
 </head>
 
 <body>
-
+    <input type="text" id="text-input">
 </body>
 
 </html>
