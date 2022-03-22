@@ -6,6 +6,8 @@ class App {
         this.scene = new THREE.Scene();
         this.clock = new THREE.Clock();
 
+        this.orbitControls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+
         document.body.appendChild(this.renderer.domElement);
 
         this.setSize();
@@ -38,8 +40,9 @@ class App {
         this.renderer.render(this.scene, this.camera);
         requestAnimationFrame(this.render.bind(this))
         this.trees.forEach(tree => {
-            tree.object.rotation.y = this.clock.elapsedTime / 1
+            /* tree.object.rotation.y = this.clock.elapsedTime / 1 */
         })
+        this.orbitControls.update()
     }
 
     setSize() {

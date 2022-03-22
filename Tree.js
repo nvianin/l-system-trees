@@ -33,7 +33,9 @@ class Tree {
     constructor(seed, position) {
         this.message = seed;
         this.seed = alphConv(seed);
+        log(this.seed)
         this.rules = parseRules(this.seed)
+        log(this.rules)
         this.branches = [];
         this.object = new THREE.Object3D();
         this.object.position.copy(position)
@@ -61,12 +63,12 @@ class Tree {
         let prev_point = new THREE.Vector3(0, 0, 0);
         let points = [];
         let i = 1;
-        let angle_mult = Math.PI * 2;
+        let angle_mult = 90;
         for (let rule of this.rules) {
             i -= 1 / this.rules.length
             /* log(rule); */
             const next_point =
-                sphericalToCartesian(rule[0] * i, rule[1] * angle_mult, rule[2] * angle_mult)
+                sphericalToCartesian(rule[0] * i, (rule[1] * 2 - 1) * 360, (rule[2] * 2 - 1) * 15)
                 .add(prev_point);
             points = points.concat(
                 [
@@ -94,7 +96,7 @@ class Tree {
         ) */
 
         /* this.object.scale.set(.1, .1, .1) */
-        /* this.object.rotation.x = Math.PI */
+        /* this.object.rotation.x = -Math.PI / 2 */
         app.scene.add(this.object)
     }
 }
