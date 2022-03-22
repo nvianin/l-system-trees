@@ -10,6 +10,7 @@
         body {
             margin: 0;
             overflow: hidden;
+            font-family: Helvetica;
         }
 
         #text-input {
@@ -21,7 +22,22 @@
             height: 10%;
             resize: none;
             user-select: none;
+            color: white;
+            background-color: #111;
 
+            text-align: center;
+        }
+
+        #rule-set {
+            position: fixed;
+            top: 2%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            width: 60%;
+            height: 10%;
+            resize: none;
+            user-select: none;
+            color: white;
             text-align: center;
         }
     </style>
@@ -39,7 +55,8 @@
 </head>
 
 <body>
-    <textarea value="" id="text-input">
+    <textarea value="" id="text-input"></textarea>
+    <div id="rule-set"></div>
 </body>
 
 </html>

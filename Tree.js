@@ -93,7 +93,8 @@ class Tree {
             }))
         this.object.add(this.line)
         this.setSizeRelativeToBoundingSphere()
-        log(points)
+        this.setRotationRelativeToCenterOfWeight()
+        /* log(points) */
 
     }
     build_instructions(instructions) {
@@ -106,14 +107,56 @@ class Tree {
             }))
         this.object.add(this.line)
         this.setSizeRelativeToBoundingSphere()
-        log(points)
+        this.setRotationRelativeToCenterOfWeight()
+        /* log(points) */
+    }
+    build_generations(sentence, generations, ruleset) {
+        let instructions = this.turtle.alphConv(sentence);
+        for (let i = 0; i < generations; i++) {
+            instructions = this.turtle.evolve(instructions, ruleset);
+            if (instructions.length > 30000) break;
+        }
+        let points = this.turtle.build(
+            instructions
+        );
+        app.lastInstructions = instructions;
+
+        this.object.remove(this.line);
+        this.line = new THREE.Line(
+            new THREE.BufferGeometry().setFromPoints(points),
+            new THREE.LineBasicMaterial({
+                color: 0xffff33
+            })
+        )
+        this.object.add(this.line);
+        this.setSizeRelativeToBoundingSphere()
+        this.setRotationRelativeToCenterOfWeight()
     }
 
     setSizeRelativeToBoundingSphere() {
+        /* return false */
         this.object.children[0].geometry.computeBoundingSphere()
         let r = this.object.children[0].geometry.boundingSphere.radius;
-        this.object.scale.set(1 / r, 1 / r, 1 / r)
         log(r, 1 / r)
+        this.object.scale.set(1 / r, 1 / r, 1 / r)
+    }
+
+    setRotationRelativeToCenterOfWeight() {
+        /* return false */
+        let verts = this.object.children[0].geometry.attributes.position.array;
+        let median = new THREE.Vector3();
+        for (let i = 0; i < verts.length; i += 3) {
+            median.add(new THREE.Vector3(verts[i], verts[i + 1], verts[i + 2]));
+        }
+        median.divideScalar(verts.length);
+        let helper = new THREE.AxesHelper(1);
+        helper.position.copy(median),
+            app.scene.add(helper)
+        setTimeout(() => {
+            app.scene.remove(helper);
+        }, 1000)
+        /* this.object.lookAt(median) */
+        /* this.object.rotate */
     }
 
     __DEPRECATED__build() {

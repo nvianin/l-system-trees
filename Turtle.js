@@ -21,9 +21,10 @@ class Turtle {
         this.object.scale.set(this.scale, this.scale, this.scale)
         app.scene.add(this.object)
         this.stored_position = new THREE.Vector3();
-        this.stored_positions = [];
-        this.stored_positions[0] = new THREE.Vector3();
-        this.theta = ((Math.PI * 2) / 360) * 15;
+        this.stored_positions = [
+            [new THREE.Vector3(), new THREE.Quaternion()]
+        ];
+        this.theta = ((Math.PI * 2) / 360) * 3.5;
     }
 
     build(instruction) {
@@ -31,7 +32,9 @@ class Turtle {
         this.object.rotation.set(0, 0, 0)
         this.heading = new THREE.Vector3(0, 0, 1);
         this.stored_position = new THREE.Vector3();
-        this.stored_positions = [new THREE.Vector3()];
+        this.stored_positions = [
+            [new THREE.Vector3(), new THREE.Quaternion()]
+        ];
         let points = []
         points.push(this.object.position.clone())
         log("Building " + instruction);
@@ -82,14 +85,22 @@ class Turtle {
                     break;
                 case "[":
                     /* this.stored_position.copy(this.object.position); */
-                    this.stored_positions.push(this.object.position.clone());
+                    this.stored_positions.push(
+                        [
+                            this.object.position.clone(),
+                            this.object.quaternion.clone()
+                        ]);
                     break;
                 case "]":
-                    this.object.position.copy(this.stored_position);
+                    /* this.object.position.copy(this.stored_position); */
                     if (this.stored_positions.length > 1) {
-                        this.object.position.copy(this.stored_positions.pop());
+                        let laspos = this.stored_positions.pop();
+                        this.object.position.copy(laspos[0]);
+                        this.object.quaternion.copy(laspos[1]);
                     } else {
-                        this.object.position.copy(this.stored_positions[0]);
+                        let laspos = this.stored_positions[0];
+                        this.object.position.copy(laspos[0]);
+                        this.object.quaternion.copy(laspos[1]);
                     }
                     break;
             }
@@ -123,8 +134,9 @@ class Turtle {
 }
 
 class Ruleset {
-    constructor() {
+    constructor(dom = null) {
         this.rules = {}
+        this.dom = dom;
     }
     addRule(input, output) {
         this.rules[input] = output
@@ -146,10 +158,13 @@ class Ruleset {
         this.clear()
         for (let i = 0; i < n; i++) {
             this.rules[
-                this.randomKey(2)
+                this.randomKey(1)
             ] = this.randomSubstition();
         }
         log("Randomized rules: ", this.rules)
+        if (this.dom) {
+            this.dom.textContent = this.format()
+        }
     }
 
     randomKey(max = 4) {
@@ -169,10 +184,21 @@ class Ruleset {
 
     randomSubstition() {
         let result = "",
-            length = Math.floor(Math.random() * 6);
+            length = Math.ceil(Math.random() * 6);
         for (let i = 0; i < length; i++) {
             result += this.randomOp();
         }
+        if (result.includes("[") && !result.includes("]")) {
+            result += "]"
+        }
         return result
+    }
+
+    format() {
+        let output = ""
+        for (let key of Object.keys(this.rules)) {
+            output += key + "->" + this.rules[key] + ", "
+        }
+        return output
     }
 }
