@@ -56,11 +56,14 @@ class Tree {
             })
         );
         this.line.computeLineDistances(); */
+        this.line_mat = new THREE.LineBasicMaterial({
+            color: 0xffff33,
+            opacity: .3,
+            transparent: true,
+
+        })
         this.line = new THREE.Line(
-            new THREE.BufferGeometry().setFromPoints(points),
-            new THREE.LineBasicMaterial({
-                color: 0xffff33
-            }))
+            new THREE.BufferGeometry().setFromPoints(points), this.line_mat)
         this.object.add(this.line);
         app.scene.add(this.object)
     }
@@ -88,9 +91,7 @@ class Tree {
         this.object.remove(this.line);
         this.line = new THREE.Line(
             new THREE.BufferGeometry().setFromPoints(points),
-            new THREE.LineBasicMaterial({
-                color: 0xffff33
-            }))
+            this.line_mat)
         this.object.add(this.line)
         this.setSizeRelativeToBoundingSphere()
         this.setRotationRelativeToCenterOfWeight()
@@ -102,9 +103,7 @@ class Tree {
         this.object.remove(this.line);
         this.line = new THREE.Line(
             new THREE.BufferGeometry().setFromPoints(points),
-            new THREE.LineBasicMaterial({
-                color: 0xffff33
-            }))
+            this.line_mat)
         this.object.add(this.line)
         this.setSizeRelativeToBoundingSphere()
         this.setRotationRelativeToCenterOfWeight()
@@ -124,21 +123,30 @@ class Tree {
         this.object.remove(this.line);
         this.line = new THREE.Line(
             new THREE.BufferGeometry().setFromPoints(points),
-            new THREE.LineBasicMaterial({
-                color: 0xffff33
-            })
-        )
+            this.line_mat)
         this.object.add(this.line);
         this.setSizeRelativeToBoundingSphere()
         this.setRotationRelativeToCenterOfWeight()
     }
 
     setSizeRelativeToBoundingSphere() {
-        /* return false */
         this.object.children[0].geometry.computeBoundingSphere()
-        let r = this.object.children[0].geometry.boundingSphere.radius;
+        let r = 1 / this.object.children[0].geometry.boundingSphere.radius;
         log(r, 1 / r)
-        this.object.scale.set(1 / r, 1 / r, 1 / r)
+        this.object.scale.set(r, r, r);
+
+        let instancedStuff = app.instanceManager.get_owned(this.turtle.instance_id);
+        let dummy = new THREE.Matrix4();
+        for (let i of instancedStuff) {
+            app.instanceManager.instances.getMatrixAt(i, dummy);
+            dummy.makeTranslation(
+                dummy.elements[12] * r,
+                dummy.elements[13] * r,
+                dummy.elements[14] * r
+            )
+            /* app.instanceManager.instances.setMatrixAt(i, dummy); */
+        }
+
     }
 
     setRotationRelativeToCenterOfWeight() {
@@ -149,10 +157,17 @@ class Tree {
             median.add(new THREE.Vector3(verts[i], verts[i + 1], verts[i + 2]));
         }
         median.divideScalar(verts.length);
-        let helper = new THREE.AxesHelper(1);
-        helper.position.copy(median),
-            app.scene.add(helper)
+        let helper = new THREE.AxesHelper(.1);
+        log(helper)
+        helper.position.copy(median);
+        let dir = helper.position.clone().sub(this.object.position)
+        let arrow = new THREE.ArrowHelper(dir, this.object.position, dir.length());
+        log(dir)
+        helper.rotation.setFromVector3(dir)
+        app.scene.add(helper);
+        app.scene.add(arrow);
         setTimeout(() => {
+            app.scene.remove(arrow)
             app.scene.remove(helper);
         }, 1000)
         /* this.object.lookAt(median) */

@@ -6,6 +6,18 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>L-systems test</title>
+    <script src="./Utils.js"></script>
+    <script src="./node_modules/three/build/three.js"></script>
+    <script src="./node_modules/three/examples/js/controls/OrbitControls.js"></script>
+    <script src="./node_modules/three/examples/js/lines/LineSegments2.js"></script>
+    <script src="./node_modules/three/examples/js/lines/Line2.js"></script>
+    <script src="./node_modules/three/examples/js/lines/LineSegmentsGeometry.js"></script>
+    <script src="./node_modules/three/examples/js/lines/LineGeometry.js"></script>
+    <script src="./node_modules/three/examples/js/lines/LineMaterial.js"></script>
+    <script src="InstanceManager.js"></script>
+    <script src="Turtle.js"></script>
+    <script src="Tree.js"></script>
+    <script src="js.js"></script>
     <style>
         body {
             margin: 0;
@@ -13,12 +25,12 @@
             font-family: Helvetica;
         }
 
-        #text-input {
+        .text-input {
             position: fixed;
             bottom: 2%;
             left: 50%;
             transform: translate(-50%, 0);
-            width: 60%;
+            width: 40%;
             height: 10%;
             resize: none;
             user-select: none;
@@ -28,35 +40,33 @@
             text-align: center;
         }
 
+        #text-translation {
+            bottom: 14%;
+        }
+
         #rule-set {
-            position: fixed;
             top: 2%;
+        }
+
+        .data-display {
+            position: fixed;
+
             left: 50%;
             transform: translate(-50%, 0);
             width: 60%;
-            height: 10%;
+            height: auto;
             resize: none;
             user-select: none;
             color: white;
             text-align: center;
         }
     </style>
-    <script src="./Utils.js"></script>
-    <script src="./node_modules/three/build/three.js"></script>
-    <script src="./node_modules/three/examples/js/controls/OrbitControls.js"></script>
-    <script src="./node_modules/three/examples/js/lines/LineSegments2.js"></script>
-    <script src="./node_modules/three/examples/js/lines/Line2.js"></script>
-    <script src="./node_modules/three/examples/js/lines/LineSegmentsGeometry.js"></script>
-    <script src="./node_modules/three/examples/js/lines/LineGeometry.js"></script>
-    <script src="./node_modules/three/examples/js/lines/LineMaterial.js"></script>
-    <script src="Turtle.js"></script>
-    <script src="Tree.js"></script>
-    <script src="js.js"></script>
 </head>
 
 <body>
-    <textarea value="" id="text-input"></textarea>
-    <div id="rule-set"></div>
+    <textarea value="" id="text-input" class="text-input"></textarea>
+    <textarea id="rule-set" class="text-input"></textarea>
+    <div id="text-translation" class="data-display"></div>
 </body>
 
 </html>

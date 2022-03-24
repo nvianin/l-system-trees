@@ -1,12 +1,15 @@
 class App {
     constructor() {
         this.renderer = new THREE.WebGLRenderer();
-        this.camera = new THREE.PerspectiveCamera(90, innerWidth / innerHeight, .1, 1000);
-        this.camera.position.z = 5;
+        /* this.renderer.setClearColor(new THREE.Color(0x000000), .9) */
+        this.camera = new THREE.PerspectiveCamera(90, innerWidth / innerHeight, .01, 1000);
+        this.camera.position.set(0, .5, 1);
         this.scene = new THREE.Scene();
         this.clock = new THREE.Clock();
 
         this.orbitControls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
+        this.orbitControls.autoRotate = true;
+        this.orbitControls.target.set(0, 0, 0);
 
         document.body.appendChild(this.renderer.domElement);
 
@@ -23,11 +26,35 @@ class App {
         )
         this.ground.rotation.x = Math.PI / 2
         this.scene.add(this.ground)
+        this.sun = new THREE.HemisphereLight(0xa28173, 0x4466ff, 4)
+        this.sun.position.set(30, 30, 10);
+        this.sun.lookAt(0, 0, 0)
+        /* this.scene.add(new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshPhysicalMaterial())) */
+        this.scene.add(this.sun)
 
         this.render()
     }
 
     init() {
+
+        this.instanceManager = new InstanceManager(
+            new THREE.SphereGeometry(),
+            new THREE.MeshPhysicalMaterial({
+                color: 0xf1f1f1,
+                transmission: .8,
+                roughness: .1,
+                thickness: 1,
+            }),
+            10000
+        );
+
+        /* this.instances = []
+        this.instance_id = this.instanceManager.register()
+        for (let i = 0; i < 100; i++) {
+            this.instanceManager.borrow(this.instance_id, new THREE.Vector3(i, 0, 0), new THREE.Vector3(.1, .1, .1), new THREE.Quaternion());
+        } */
+
+
         const sentences = [
             "I don't have a life, I have a routine.",
             "The trees speak to me, they have messages.",
@@ -49,18 +76,28 @@ class App {
         this.ruleset.addRule("F", "RF[RF[RF]LF[LF[LFR]]]");
         this.ruleset.addRule("[", "[LUFLUF[FFUUF]RUFF")
 
+        this.rule_dom.addEventListener("input", e => {
+            this.ruleset.parse(removeDiacritics(this.rule_dom.value).toUpperCase(), true)
+            /* log(e) */
+            this.tree.build_generations(this.sentence, 5, this.ruleset)
+        })
         /* this.ruleset.addRule("U", "F") */
 
         this.input = document.querySelector("#text-input");
         this.input.addEventListener("input", e => {
-            log(this.input.value);
-            this.tree.build_generations(this.input.value, 10, this.ruleset);
-            this.lastInstructions = this.tree.turtle.alphConv(this.input.value);
             this.sentence = this.input.value;
+            this.sentence = removeDiacritics(this.sentence)
+            log(this.input.value);
+            this.tree.build_generations(this.sentence, 3, this.ruleset);
+            this.lastInstructions = this.tree.turtle.alphConv(this.sentence);
+            this.translation_output.textContent = this.tree.turtle.alphConv(this.sentence)
         })
         this.sentence = "bonsoir je teste mon système de créations d'arbres"
         this.input.value = this.sentence
+        this.sentence = removeDiacritics(this.sentence)
+        this.translation_output = document.querySelector("#text-translation");
         this.input.dispatchEvent(new Event("input"))
+        this.translation_output.textContent = this.tree.turtle.alphConv(this.sentence)
         document.body.addEventListener("keypress", e => {
             switch (e.key.toLowerCase()) {
                 case " ":
@@ -87,7 +124,10 @@ class App {
             }
         })
         this.input.addEventListener("keypress", e => {
-            e.stopPropagation()
+            e.stopPropagation();
+        })
+        this.translation_output.addEventListener("keypress", e => {
+            e.stopPropagation();
         })
         let i = 0;
         this.trees = []
@@ -101,6 +141,15 @@ class App {
             i++
         }
 
+        window.addEventListener("pointerup", e => {
+            this.orbitControls.autoRotate = false;
+            if (this.autoRotateTimeout) {
+                clearTimeout(this.autoRotateTimeout);
+            }
+            this.autoRotateTimeout = setTimeout(() => {
+                this.orbitControls.autoRotate = true;
+            }, 2000);
+        })
 
     }
 
