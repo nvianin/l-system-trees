@@ -32,6 +32,13 @@ class App {
         /* this.scene.add(new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshPhysicalMaterial())) */
         this.scene.add(this.sun)
 
+        this.pearlPalette = [
+            0x4acdff,
+            0xff46a3,
+            0x37ffc8,
+            0xff9555
+        ]
+
         this.render()
     }
 

@@ -119,7 +119,7 @@ class Turtle {
                     this.theta -= this.theta_offset;
                     break;
                 case "S":
-                    app.instanceManager.borrow(
+                    let i = app.instanceManager.borrow(
                         this.instance_id,
                         this.object.position.clone().add(
                             new THREE.Vector3(
@@ -135,6 +135,18 @@ class Turtle {
                         ),
                         this.object.quaternion.clone()
                     );
+                    let c = new THREE.Color(
+                        app.pearlPalette[
+                            Math.floor(
+                                Math.random() * app.pearlPalette.length
+                            )
+                        ]
+                    );
+                    app.instanceManager.instances.setColorAt(
+                        i,
+                        c
+                    )
+                    app.instanceManager.instances.instanceColor.needsUpdate = true;
                     break;
             }
             points.push(this.object.position.clone())
