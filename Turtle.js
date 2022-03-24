@@ -186,12 +186,20 @@ class Ruleset {
         this.updateDom()
     }
 
-    randomize(n = 3) {
+    randomize(n = 3, replace = true) {
         this.clear()
+        let new_rules = []
         for (let i = 0; i < n; i++) {
-            this.rules[
-                this.randomKey(1)
-            ] = this.randomSubstition();
+            new_rules.push(
+                [this.randomKey(1), this.randomSubstition()]
+            )
+        }
+        if (replace) {
+            this.clear()
+        }
+        for (let r of new_rules) {
+            log(r)
+            this.addRule[r[0], r[1]];
         }
         log("Randomized rules: ", this.rules)
         this.updateDom()
