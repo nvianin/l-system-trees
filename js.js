@@ -45,7 +45,7 @@ class App {
                 roughness: .1,
                 thickness: 1,
             }),
-            10000
+            5000
         );
 
         /* this.instances = []
@@ -92,7 +92,7 @@ class App {
             this.lastInstructions = this.tree.turtle.alphConv(this.sentence);
             this.translation_output.textContent = this.tree.turtle.alphConv(this.sentence)
         })
-        this.sentence = "bonsoir je teste mon système de créations d'arbres"
+        this.sentence = "Les arbres sont générés en fonction de la phrase tapée et de règles suivant un système de Lindenmayer."
         this.input.value = this.sentence
         this.sentence = removeDiacritics(this.sentence)
         this.translation_output = document.querySelector("#text-translation");

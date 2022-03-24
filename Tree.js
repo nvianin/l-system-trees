@@ -136,21 +136,25 @@ class Tree {
         this.object.scale.set(r, r, r);
 
         let instancedStuff = app.instanceManager.get_owned(this.turtle.instance_id);
-        let dummy = new THREE.Matrix4();
+        log(instancedStuff)
         for (let i of instancedStuff) {
+            let dummy = new THREE.Matrix4();
+            i = parseFloat(i)
             app.instanceManager.instances.getMatrixAt(i, dummy);
-            dummy.makeTranslation(
-                dummy.elements[12] * r,
-                dummy.elements[13] * r,
-                dummy.elements[14] * r
-            )
-            /* app.instanceManager.instances.setMatrixAt(i, dummy); */
+            log(dummy)
+
+            dummy.elements[12] *= r,
+                dummy.elements[13] *= r,
+                dummy.elements[14] *= r
+
+            app.instanceManager.instances.setMatrixAt(i, dummy);
         }
+        app.instanceManager.instances.instanceMatrix.needsUpdate = true;
 
     }
 
     setRotationRelativeToCenterOfWeight() {
-        /* return false */
+        return false
         let verts = this.object.children[0].geometry.attributes.position.array;
         let median = new THREE.Vector3();
         for (let i = 0; i < verts.length; i += 3) {

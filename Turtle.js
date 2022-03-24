@@ -31,7 +31,7 @@ class Turtle {
         this.theta_backup = this.theta;
         this.theta_offset = ((Math.PI * 2) / 360) * 1;
         this.instance_id = app.instanceManager.register(this);
-        this.fruit_scale = .03;
+        this.fruit_scale = .05;
     }
 
     build(instruction) {
@@ -121,7 +121,13 @@ class Turtle {
                 case "S":
                     app.instanceManager.borrow(
                         this.instance_id,
-                        this.object.position.clone(),
+                        this.object.position.clone().add(
+                            new THREE.Vector3(
+                                0,
+                                -distance_factor * this.fruit_scale,
+                                0
+                            )
+                        ),
                         new THREE.Vector3(
                             distance_factor * this.fruit_scale,
                             distance_factor * this.fruit_scale,
@@ -167,11 +173,13 @@ class Ruleset {
         this.dom = dom;
         this.updateDom()
     }
+
     addRule(input, output) {
         this.rules[input] = output
         log(this.rules)
         this.updateDom()
     }
+
     getRule(key, conservative = false) {
         if (this.rules[key.toUpperCase()]) {
             return this.rules[key]
@@ -199,7 +207,7 @@ class Ruleset {
         }
         for (let r of new_rules) {
             log(r)
-            this.addRule[r[0], r[1]];
+            this.addRule(r[0], r[1]);
         }
         log("Randomized rules: ", this.rules)
         this.updateDom()

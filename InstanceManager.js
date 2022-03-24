@@ -11,12 +11,12 @@ class InstanceManager {
         this.nil = new THREE.Matrix4();
         this.nil.compose(new THREE.Vector3(9000, 9000, 9000), new THREE.Quaternion(), new THREE.Vector3(1, 1, 1));
         for (let i = 0; i < this.instances.count; i++) {
-            this.dummy.setPosition(this.nil)
-            this.instances.setMatrixAt(i, this.dummy)
+            this.instances.setMatrixAt(i, this.nil)
         }
         app.scene.add(this.instances)
         this.ledger = {}
         this.lendees = {}
+        this.takeOutErrors = 0;
     }
 
     register(owner) {
@@ -44,7 +44,7 @@ class InstanceManager {
             this.instances.instanceMatrix.needsUpdate = true;
             return i;
         } catch (e) {
-            console.error(e);
+            if (this.takeOutErrors % 1000 == 0) console.error(e);
         }
     }
 
