@@ -11,6 +11,8 @@ class App {
         this.orbitControls.autoRotate = true;
         this.orbitControls.target.set(0, 0, 0);
 
+        this.input_timeout = false;
+
         document.body.appendChild(this.renderer.domElement);
 
         this.setSize();
@@ -84,9 +86,16 @@ class App {
         this.ruleset.addRule("[", "[LUFLUF[FFUUF]RUFF")
 
         this.rule_dom.addEventListener("input", e => {
-            this.ruleset.parse(removeDiacritics(this.rule_dom.value).toUpperCase(), true)
+            if (this.input_timeout) {
+                clearTimeout(this.input_timeout);
+            }
+            this.input_timeout = setTimeout(() => {
+                clearTimeout(this.input_timeout);
+                this.input_timeout = false;
+                this.ruleset.parse(removeDiacritics(this.rule_dom.value).toUpperCase(), true)
+                this.tree.build_generations(this.sentence, 5, this.ruleset)
+            }, 2000)
             /* log(e) */
-            this.tree.build_generations(this.sentence, 5, this.ruleset)
         })
         /* this.ruleset.addRule("U", "F") */
 
@@ -133,7 +142,7 @@ class App {
         this.input.addEventListener("keypress", e => {
             e.stopPropagation();
         })
-        this.translation_output.addEventListener("keypress", e => {
+        this.rule_dom.addEventListener("keypress", e => {
             e.stopPropagation();
         })
         let i = 0;

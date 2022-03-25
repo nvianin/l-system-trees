@@ -281,7 +281,7 @@ class Ruleset {
     updateDom() {
         if (this.dom) {
             if (this.dom.tagName == "TEXTAREA") {
-                this.dom.value = this.format()
+                if (!app.input_timeout) this.dom.value = this.format()
             } else {
                 this.dom.textContent = this.format()
             }
