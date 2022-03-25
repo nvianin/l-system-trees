@@ -137,6 +137,9 @@ class App {
                     this.tree.build_generations(this.sentence, 30, this.ruleset)
 
                     break;
+                case "c":
+                    this.orbitControls.reset();
+                    break;
             }
         })
         this.input.addEventListener("keypress", e => {

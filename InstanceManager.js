@@ -79,7 +79,36 @@ class InstanceManager {
                 return i;
             }
         }
+        this.takeOutErrors++;
         throw new Error("InstanceManager could not find free instance !")
+    }
+
+    get_count() {
+        let count = 0;
+        for (let i = 0; i < this.instances.count; i++) {
+            if (this.ledger[i]) count++;
+        }
+        return count;
+    }
+
+    debug_display() {
+        let side = Math.cbrt(this.instances.count);
+        let dummy = new THREE.Matrix4();
+        for (let z = 0; z < side; z++) {
+            for (let y = 0; y < side; y++) {
+                for (let x = 0; x < side; x++) {
+                    let i = side ** 2 * z + side * y + x;
+                    dummy.compose(
+                        new THREE.Vector3(x, y, z),
+                        new THREE.Quaternion(),
+                        new THREE.Vector3(1, 1, 1)
+                    );
+                    this.instances.setMatrixAt(i, dummy)
+                }
+            }
+
+        }
+        this.instances.instanceMatrix.needsUpdate = true;
     }
 
 }

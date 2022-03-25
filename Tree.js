@@ -130,6 +130,7 @@ class Tree {
     }
 
     setSizeRelativeToBoundingSphere() {
+        return false;
         this.object.children[0].geometry.computeBoundingSphere()
         let r = 1 / this.object.children[0].geometry.boundingSphere.radius;
         log(r, 1 / r)

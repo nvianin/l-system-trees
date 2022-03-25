@@ -3,6 +3,8 @@ let turtle_operations = [
     "B", // Backwards
     "R", // Right
     "L", // Left
+    "+", // Positive Spin
+    "-", // Negative Spin
     "U", // Up
     "D", // Down
     "[", // Store position
@@ -27,11 +29,11 @@ class Turtle {
         this.stored_positions = [
             [new THREE.Vector3(), new THREE.Quaternion()]
         ];
-        this.theta = ((Math.PI * 2) / 360) * 15;
+        this.theta = ((Math.PI * 2) / 360) * 7.5;
         this.theta_backup = this.theta;
-        this.theta_offset = ((Math.PI * 2) / 360) * 5;
+        this.theta_offset = ((Math.PI * 2) / 360) * 2;
         this.instance_id = app.instanceManager.register(this);
-        this.fruit_scale = .05;
+        this.fruit_scale = .23;
     }
 
     build(instruction) {
@@ -52,9 +54,8 @@ class Turtle {
         let distance_factor;
         for (let char of instruction.toUpperCase().split("")) {
             distance_factor = Math.pow(i / instruction.length, 2)
-            /* log(distance_factor) */
-            /* distance_factor = 1 */
-            /* log(char) */
+            /* log(char, distance_factor) */
+            distance_factor = 1
             switch (char) {
                 case "F":
                     /* this.position.add(this.heading.clone().multiplyScalar(distance_factor)); */
@@ -91,6 +92,12 @@ class Turtle {
                         -this.theta
                     ); */
                     this.object.rotateZ(-this.theta)
+                    break;
+                case "+":
+                    this.object.rotateY(this.theta);
+                    break;
+                case "-":
+                    this.object.rotateY(-this.theta);
                     break;
                 case "[":
                     /* this.stored_position.copy(this.object.position); */
