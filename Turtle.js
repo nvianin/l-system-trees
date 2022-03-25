@@ -27,9 +27,9 @@ class Turtle {
         this.stored_positions = [
             [new THREE.Vector3(), new THREE.Quaternion()]
         ];
-        this.theta = ((Math.PI * 2) / 360) * 5;
+        this.theta = ((Math.PI * 2) / 360) * 15;
         this.theta_backup = this.theta;
-        this.theta_offset = ((Math.PI * 2) / 360) * 1;
+        this.theta_offset = ((Math.PI * 2) / 360) * 5;
         this.instance_id = app.instanceManager.register(this);
         this.fruit_scale = .05;
     }

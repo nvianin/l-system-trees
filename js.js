@@ -28,7 +28,7 @@ class App {
         )
         this.ground.rotation.x = Math.PI / 2
         this.scene.add(this.ground)
-        this.sun = new THREE.HemisphereLight(0xa28173, 0x4466ff, 4)
+        this.sun = new THREE.HemisphereLight(0xa28173, 0x4466ff, 7)
         this.sun.position.set(30, 30, 10);
         this.sun.lookAt(0, 0, 0)
         /* this.scene.add(new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshPhysicalMaterial())) */
