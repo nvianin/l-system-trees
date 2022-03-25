@@ -54,7 +54,7 @@ class App {
                 roughness: .1,
                 thickness: 1,
             }),
-            5000
+            10000
         );
 
         /* this.instances = []
@@ -108,7 +108,7 @@ class App {
             this.lastInstructions = this.tree.turtle.alphConv(this.sentence);
             this.translation_output.textContent = this.tree.turtle.alphConv(this.sentence)
         })
-        this.sentence = "Les arbres sont générés en fonction de la phrase tapée et de règles suivant un système de Lindenmayer."
+        this.sentence = "Les arbres sont générés en fonction de la phrase tapée et de règles suivant un système de Lindenmayer. Créé par Aristid Lindenmayer, un biologiste Hongrois en 1968, ce système permet d'encoder un formule décrivant une forme végétale auto-réplicatrice dans une chaîne d'opérations représentées par des lettres."
         this.input.value = this.sentence
         this.sentence = removeDiacritics(this.sentence)
         this.translation_output = document.querySelector("#text-translation");
