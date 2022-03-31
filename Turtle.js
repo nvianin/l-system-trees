@@ -15,10 +15,13 @@ let turtle_operations = [
 ]
 
 class Turtle {
-    constructor(scale = 1) {
+    constructor(scale = 1, alphConvRegister) {
         this.position = new THREE.Vector3();
         this.heading = new THREE.Vector3(0, 0, 1);
         this.object = new THREE.Object3D();
+
+        this.alphConvRegister = alphConvRegister;
+        log(alphConvRegister)
         /* this.object.add(new THREE.AxesHelper(.3)) */
         this.helper = new THREE.AxesHelper(.3);
         app.scene.add(this.helper)
@@ -29,9 +32,9 @@ class Turtle {
         this.stored_positions = [
             [new THREE.Vector3(), new THREE.Quaternion()]
         ];
-        this.theta = ((Math.PI * 2) / 360) * 7.5;
+        this.theta = ((Math.PI * 2) / 360) * 3.5;
         this.theta_backup = this.theta;
-        this.theta_offset = ((Math.PI * 2) / 360) * 2;
+        this.theta_offset = ((Math.PI * 2) / 360) * .5;
         this.instance_id = app.instanceManager.register(this);
         this.fruit_scale = .23;
     }
@@ -55,7 +58,7 @@ class Turtle {
         for (let char of instruction.toUpperCase().split("")) {
             distance_factor = Math.pow(i / instruction.length, 2)
             /* log(char, distance_factor) */
-            distance_factor = 1
+            /* distance_factor = 1 */
             switch (char) {
                 case "F":
                     /* this.position.add(this.heading.clone().multiplyScalar(distance_factor)); */
@@ -176,7 +179,7 @@ class Turtle {
     alphConv(seed) {
         let instruction = ""
         for (let char of seed.split("")) {
-            let alphNum = alphConvRegister[char.toUpperCase()];
+            let alphNum = this.alphConvRegister[char.toUpperCase()];
             if (alphNum) {
                 /* log(turtle_operations[alphNum % 8]) */
                 instruction = instruction.concat(turtle_operations[(alphNum - 1) % turtle_operations.length])

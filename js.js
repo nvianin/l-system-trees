@@ -1,11 +1,24 @@
+let loader = new THREE.GLTFLoader();
+let loadList = [{
+    name: "terrain"
+}]
 class App {
     constructor() {
         this.renderer = new THREE.WebGLRenderer();
         /* this.renderer.setClearColor(new THREE.Color(0x000000), .9) */
+
         this.camera = new THREE.PerspectiveCamera(90, innerWidth / innerHeight, .01, 1000);
         this.camera.position.set(0, .5, 1);
         this.scene = new THREE.Scene();
         this.clock = new THREE.Clock();
+        let bgCol = new THREE.Color(0x111522);
+        this.fog = new THREE.Fog(bgCol, 0, 100);
+        this.scene.fog = this.fog;
+        this.renderer.setClearColor(bgCol);
+
+        this.loadResources();
+
+        this.initPostprocess()
 
         this.orbitControls = new THREE.OrbitControls(this.camera, this.renderer.domElement);
         this.orbitControls.autoRotate = true;
@@ -19,7 +32,7 @@ class App {
         window.addEventListener("resize", this.setSize.bind(this))
 
         this.trees = [];
-        this.ground = new THREE.Mesh(
+        /* this.ground = new THREE.Mesh(
             new THREE.PlaneGeometry(2, 2, 3, 3),
             new THREE.MeshBasicMaterial({
                 color: 0x444444,
@@ -27,18 +40,25 @@ class App {
             })
         )
         this.ground.rotation.x = Math.PI / 2
-        this.scene.add(this.ground)
-        this.sun = new THREE.HemisphereLight(0xa28173, 0x4466ff, 7)
+        this.scene.add(this.ground) */
+        this.sun = new THREE.HemisphereLight(0xa28173, 0x4466ff, 14)
         this.sun.position.set(30, 30, 10);
         this.sun.lookAt(0, 0, 0)
         /* this.scene.add(new THREE.Mesh(new THREE.BoxGeometry(), new THREE.MeshPhysicalMaterial())) */
         this.scene.add(this.sun)
 
-        this.pearlPalette = [
+        /* this.pearlPalette = [
             0x4acdff,
             0xff46a3,
             0x37ffc8,
             0xff9555
+        ] */
+        this.pearlPalette = [
+            0x000000,
+            0xbe1e2d,
+            0xffde17,
+            0xffffff,
+            0x21409a
         ]
 
         this.render()
@@ -51,8 +71,10 @@ class App {
             new THREE.MeshPhysicalMaterial({
                 color: 0xf1f1f1,
                 transmission: .8,
-                roughness: .1,
+                roughness: .5,
                 thickness: 1,
+                opacity: .5,
+                transparent: true,
             }),
             10000
         );
@@ -161,20 +183,53 @@ class App {
         }
 
         window.addEventListener("pointerup", e => {
-            this.orbitControls.autoRotate = false;
-            if (this.autoRotateTimeout) {
-                clearTimeout(this.autoRotateTimeout);
-            }
-            this.autoRotateTimeout = setTimeout(() => {
-                this.orbitControls.autoRotate = true;
-            }, 2000);
+            this.preventAutoRotate();
+        })
+        window.addEventListener("wheel", e => {
+            this.preventAutoRotate();
         })
 
     }
 
+    initPostprocess() {
+        this.renderScene = new THREE.RenderPass(this.scene, this.camera);
+        this.composer = new THREE.EffectComposer(this.renderer);
+        this.bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(innerWidth, innerHeight), 1, 2, .3); // strength, radius, threshold
+        this.bokehPass = new THREE.BokehPass(this.scene, this.camera, {
+            focus: 2.0,
+            aperture: .00001,
+            maxblur: .01,
+            width: innerWidth,
+            height: innerHeight,
+        });
+        this.composer.addPass(this.renderScene);
+        this.composer.addPass(this.bloomPass);
+        this.composer.addPass(this.bokehPass);
+    }
+
+    loadResources() {
+        loadList.forEach(loadable => {
+            loader.load("./resources/models/" + loadable.name + ".glb", gltf => {
+                switch (loadable.name) {
+                    case "terrain":
+                        gltf.scene.children[0].material =
+                            new THREE.MeshBasicMaterial({
+                                color: 0x444444,
+                                wireframe: true,
+                            })
+                        gltf.scene.children[0].scale.set(100, 100, 100);
+                        gltf.scene.children[0].position.y = -1.5;
+                        break;
+                }
+                this.scene.add(gltf.scene)
+            })
+        })
+    }
+
     render() {
         this.clock.getElapsedTime()
-        this.renderer.render(this.scene, this.camera);
+        /* this.renderer.render(this.scene, this.camera); */
+        this.composer.render();
         requestAnimationFrame(this.render.bind(this))
         this.trees.forEach(tree => {
             /* tree.object.rotation.y = this.clock.elapsedTime / 1 */
@@ -184,11 +239,25 @@ class App {
 
     setSize() {
         this.renderer.setSize(innerWidth, innerHeight);
+        this.composer.setSize(innerWidth, innerHeight);
         this.camera.aspect = innerWidth / innerHeight;
         this.camera.updateProjectionMatrix();
+
+    }
+
+    preventAutoRotate() {
+        this.orbitControls.autoRotate = false;
+        if (this.autoRotateTimeout) {
+            clearTimeout(this.autoRotateTimeout);
+        }
+        this.autoRotateTimeout = setTimeout(() => {
+            this.orbitControls.autoRotate = true;
+        }, 2000);
     }
 }
+
 let app;
+
 window.addEventListener("load", () => {
     app = document.app = new App;
     app.init()
