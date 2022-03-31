@@ -43,8 +43,8 @@ class Tree {
         this.object.scale.set(this.scale, this.scale, this.scale)
         /* this.object.rotation.x = Math.PI */
         /* this.build(); */
-
-        this.turtle = new Turtle(this.scale);
+        /* log(alphConvRegister) */
+        this.turtle = new Turtle(this.scale, alphConvRegister);
         let instructions = this.turtle.alphConv(this.message)
         log(instructions)
         let points = this.turtle.build(instructions)
@@ -130,7 +130,7 @@ class Tree {
     }
 
     setSizeRelativeToBoundingSphere() {
-        return false;
+        /* return false; */
         this.object.children[0].geometry.computeBoundingSphere()
         let r = 1 / this.object.children[0].geometry.boundingSphere.radius;
         log(r, 1 / r)
@@ -138,15 +138,29 @@ class Tree {
 
         let instancedStuff = app.instanceManager.get_owned(this.turtle.instance_id);
         log(instancedStuff)
+        let scale = new THREE.Vector3();
+        let rotation = new THREE.Quaternion();
+        let position = new THREE.Vector3();
         for (let i of instancedStuff) {
             let dummy = new THREE.Matrix4();
             i = parseFloat(i)
             app.instanceManager.instances.getMatrixAt(i, dummy);
-            log(dummy)
+            /* log(dummy) */
 
-            dummy.elements[12] *= r,
-                dummy.elements[13] *= r,
-                dummy.elements[14] *= r
+            scale.setFromMatrixScale(dummy);
+            position.setFromMatrixPosition(dummy);
+            rotation.setFromRotationMatrix(dummy);
+
+            /* dummy.elements[0] *= r;
+            dummy.elements[4] *= r;
+            dummy.elements[8] *= r; */
+
+            dummy.compose(position.multiplyScalar(r), rotation, scale.multiplyScalar(r));
+
+            /* dummy.elements[12] *= r;
+            dummy.elements[13] *= r;
+            dummy.elements[14] *= r; */
+
 
             app.instanceManager.instances.setMatrixAt(i, dummy);
         }

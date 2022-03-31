@@ -1,0 +1,1 @@
+console.error("\nC:\\Users\\kavou\\Documents\\Projects\\l-system-trees\\InstanceManager.js:123\nexport {\r\n^\nParseError: 'import' and 'export' may appear only with 'sourceType: module'");
