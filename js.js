@@ -93,7 +93,7 @@ class App {
                 clearTimeout(this.input_timeout);
                 this.input_timeout = false;
                 this.ruleset.parse(removeDiacritics(this.rule_dom.value).toUpperCase(), true)
-                this.tree.build_generations(this.sentence, 5, this.ruleset)
+                this.tree.build_generations(this.sentence, 15, this.ruleset)
             }, 2000)
             /* log(e) */
         })
@@ -104,7 +104,7 @@ class App {
             this.sentence = this.input.value;
             this.sentence = removeDiacritics(this.sentence)
             log(this.input.value);
-            this.tree.build_generations(this.sentence, 3, this.ruleset);
+            this.tree.build_generations(this.sentence, 10, this.ruleset);
             this.lastInstructions = this.tree.turtle.alphConv(this.sentence);
             this.translation_output.textContent = this.tree.turtle.alphConv(this.sentence)
         })
