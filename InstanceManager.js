@@ -20,7 +20,7 @@ class InstanceManager {
     }
 
     register(owner) {
-        let id = crypto.randomUUID();
+        let id = Math.random() * 1000 * 0xfffff
         this.lendees[id] = owner;
         return id;
     }
